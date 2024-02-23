@@ -10,7 +10,7 @@ namespace Clean.Architecture.Core.Usecase.Interface.External
     public interface IParishnerPersistence
     {
         void AddParishner(Parishner parishner, Guid parishId);
-        Parishner GetParishner(Guid parishId, Guid parishnerId);
-        void UpdateParishner(Parishner parishner);
+        Parishner GetParishner(Guid parishnerId, Guid parishId);
+        void UpdateParishner(Parishner parishner, Guid parishId);
     }
 }

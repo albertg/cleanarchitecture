@@ -17,5 +17,11 @@ namespace Clean.Architecture.Infrastructure.Database.InMemory.Repository
         {
             return dbSet.Where(x => x.Id == parishnerId && x.Parish.Id == parishId).FirstOrDefault();
         }
+
+        public void Save(DbParishner parishner)
+        {
+            dbSet.Update(parishner);
+            context.SaveChanges();
+        }
     }
 }

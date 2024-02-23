@@ -20,18 +20,14 @@ namespace Clean.Architecture.Core.Usecase
             this.parishPersistance = parishPersistance;
         }
 
-        public void PromoteParishnerAsCouncilMember(Guid parishId, Guid parishnerId)
+        public void PromoteParishnerAsCouncilMember(Guid parishnerId, Guid parishId)
         {
-            //Parish parish = this.parishPersistance.GetParishById(parishId);
-            //if (parish != null)
-            //{
-            //    Parishner parishner = this.parishnerPersistence.GetParishner(parishId, parishnerId);
-            //    if (parishner != null)
-            //    {
-            //        parishner.PromoteAsCouncilMember();
-            //        this.parishnerPersistence.UpdateParishner(parishner);
-            //    }
-            //}
+            Parishner parishner = this.parishnerPersistence.GetParishner(parishnerId, parishId);
+            if (parishner != null)
+            {
+                parishner.PromoteAsCouncilMember();
+                this.parishnerPersistence.UpdateParishner(parishner, parishId);
+            }
         }
     }
 }

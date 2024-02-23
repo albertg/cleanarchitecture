@@ -9,6 +9,6 @@ namespace Clean.Architecture.Core.Usecase.Interface
 {
     public interface IModifyParishnerUsecases
     {
-        void PromoteParishnerAsCouncilMember(Guid parishId, Guid parishnerId);
+        void PromoteParishnerAsCouncilMember(Guid parishnerId, Guid parishId);
     }
 }

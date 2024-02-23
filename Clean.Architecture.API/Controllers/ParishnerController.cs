@@ -14,15 +14,18 @@ namespace Clean.Architecture.API.Controllers
     {
         private readonly ICreateParishnerUsecases createParishnerUsecases;
         private readonly IGetParishnerUsecases getParishnerUsecases;
+        private readonly IModifyParishnerUsecases modifyParishnerUsecases;
 
-        public ParishnerController(ICreateParishnerUsecases createParishnerUsecases, IGetParishnerUsecases getParishnerUsecases)
+        public ParishnerController(ICreateParishnerUsecases createParishnerUsecases, IGetParishnerUsecases getParishnerUsecases,
+            IModifyParishnerUsecases modifyParishnerUsecases)
         {
             this.createParishnerUsecases = createParishnerUsecases;
             this.getParishnerUsecases = getParishnerUsecases;
+            this.modifyParishnerUsecases = modifyParishnerUsecases;
         }
 
         [HttpPost("add")]
-        public Guid Post([FromBody] NewParishnerRequest newParishnerRequest)
+        public Guid AddParishner([FromBody] NewParishnerRequest newParishnerRequest)
         {
             Parishner parishner = Transform(newParishnerRequest);
             parishner = this.createParishnerUsecases.AddParishner(parishner, newParishnerRequest.ParishId);
@@ -34,6 +37,12 @@ namespace Clean.Architecture.API.Controllers
         {
             Parishner parishner = this.getParishnerUsecases.GetParishner(parishnerId, parishId);
             return Transform(parishner);
+        }
+
+        [HttpPut("promote")]
+        public void PromoteParishner(Guid parishnerId, Guid parishId)
+        {
+            this.modifyParishnerUsecases.PromoteParishnerAsCouncilMember(parishnerId, parishId);
         }
 
         private GetParishnerDetailsResponse Transform(Parishner parishner)

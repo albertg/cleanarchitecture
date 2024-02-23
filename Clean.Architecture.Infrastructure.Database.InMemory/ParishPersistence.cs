@@ -36,9 +36,15 @@ namespace Clean.Architecture.Infrastructure.Database.InMemory
             return Transform(dbParishner);
         }
 
-        public void UpdateParishner(Parishner parishner)
+        public void UpdateParishner(Parishner parishner, Guid parishId)
         {
-            throw new NotImplementedException();
+            DbParishner dbParishner = this.unitOfWork.ParishnerRepository.Get(parishner.Id, parishId);
+            dbParishner.DateOfBirth = parishner.DateOfBirth;
+            dbParishner.Phone = parishner.PhoneNumber;
+            dbParishner.Address = parishner.Address;
+            dbParishner.Name = parishner.Name;
+            dbParishner.IsMemberOfCouncil = parishner.IsCouncilMember;
+            this.unitOfWork.ParishnerRepository.Save(dbParishner);
         }
 
         public void AddParish(Parish parish)
