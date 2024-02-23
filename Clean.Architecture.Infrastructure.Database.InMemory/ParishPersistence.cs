@@ -40,6 +40,10 @@ namespace Clean.Architecture.Infrastructure.Database.InMemory
                     DateOfBirth = dbParishner.DateOfBirth,
                     PhoneNumber = dbParishner.Phone
                 };
+                if (dbParishner.IsMemberOfCouncil)
+                {
+                    parishner.PromoteAsCouncilMember();
+                }
                 parish.RegisterParishner(parishner);
             }
         }
@@ -76,6 +80,7 @@ namespace Clean.Architecture.Infrastructure.Database.InMemory
             dbParishner.Name = parishner.Name;
             dbParishner.DateOfBirth = parishner.DateOfBirth;
             dbParishner.ParishnerType = (int)parishner.ParishnerType;
+            dbParishner.IsMemberOfCouncil = parishner.IsCouncilMember;
             dbParishner.Address = parishner.Address;
             dbParishner.Phone = parishner.PhoneNumber;
             unitOfWork.ParishnerRepository.Add(dbParishner);

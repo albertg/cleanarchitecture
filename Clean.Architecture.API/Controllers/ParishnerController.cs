@@ -19,7 +19,7 @@ namespace Clean.Architecture.API.Controllers
             this.createParishnerUsecases = createParishnerUsecases;
         }
 
-        [HttpPost("create")]
+        [HttpPost("add")]
         public Guid Post([FromBody] NewParishnerRequest newParishnerRequest)
         {
             Parishner parishner = Transform(newParishnerRequest);
@@ -33,9 +33,23 @@ namespace Clean.Architecture.API.Controllers
             {
                 Address = newParishnerRequest.Address,
                 DateOfBirth = newParishnerRequest.DateOfBirth,
-                PhoneNumber = newParishnerRequest.Phone
+                PhoneNumber = newParishnerRequest.Phone,
+                ParishnerType = Transform(newParishnerRequest.TypeOfMember)
             };
             return parishner;
+        }
+
+        private ParishnerType Transform(MemberType memberType)
+        {
+            ParishnerType parishnerType = ParishnerType.Parishner;
+            switch (memberType)
+            {
+                case MemberType.Assistant:
+                    parishnerType = ParishnerType.AssistantPriest; break;
+                case MemberType.ParishPriest:
+                    parishnerType = ParishnerType.Priest; break;
+            }
+            return parishnerType;
         }
     }
 }

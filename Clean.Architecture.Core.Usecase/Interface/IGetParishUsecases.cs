@@ -9,6 +9,6 @@ namespace Clean.Architecture.Core.Usecase.Interface
 {
     public interface IGetParishUsecases
     {
-        List<Parish> GetAllParishes();
+        Parish GetParish(Guid parishId);
     }
 }

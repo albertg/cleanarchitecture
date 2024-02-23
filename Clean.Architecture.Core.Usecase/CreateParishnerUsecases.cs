@@ -23,7 +23,7 @@ namespace Clean.Architecture.Core.Usecase
 
         public Parishner AddParishner(Parishner parishner, Guid parishId)
         {
-            parishner.ParishnerType = ParishnerType.Parishner;
+            //TODO: Make sure that the parishner does not belong to another parish
             Parish parish = this.parishPersistance.GetParishById(parishId);
             parish.RegisterParishner(parishner);
             this.parishnerPersistence.AddParishner(parishner, parishId);

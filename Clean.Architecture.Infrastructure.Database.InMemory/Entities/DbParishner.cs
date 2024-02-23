@@ -14,6 +14,7 @@ namespace Clean.Architecture.Infrastructure.Database.InMemory.Entities
         public string Address { get; set; }
         public string Phone { get; set; }
         public DateTime DateOfBirth { get; set; }
+        public bool IsMemberOfCouncil { get; set; }
         public DbParish Parish {  get; set; }
     }
 }

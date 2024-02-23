@@ -38,7 +38,7 @@ namespace Clean.Architecture.Core.Model.Aggregate
 
         public List<Parishner> GetCouncilMembers()
         {
-            return this.parishnerList.Where(p => p.ParishnerType == ParishnerType.CouncilMember).ToList();
+            return this.parishnerList.Where(p => p.IsCouncilMember).ToList();
         }
 
         private bool PriestExists()

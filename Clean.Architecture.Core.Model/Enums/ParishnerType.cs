@@ -10,7 +10,6 @@ namespace Clean.Architecture.Core.Model.Enums
     {
         Priest = 0,
         AssistantPriest,
-        Parishner,
-        CouncilMember
+        Parishner
     }
 }

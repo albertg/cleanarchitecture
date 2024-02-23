@@ -18,7 +18,7 @@ namespace Clean.Architecture.API.Controllers
             this.getParishUsecases = getParishUsecases;
         }
 
-        [HttpPost("create")]
+        [HttpPost("add")]
         public Guid Post([FromBody] NewParishRequest newParish)
         {
             Parish parish = new Parish(newParish.ParishName, newParish.ParishAddress);
@@ -31,30 +31,25 @@ namespace Clean.Architecture.API.Controllers
         }
 
         [HttpGet(Name = "get")]
-        public List<GetParishResponse> Get()
+        public GetParishResponse Get(Guid parishId)
         {
-            List<Parish> parishList = this.getParishUsecases.GetAllParishes();
-            List<GetParishResponse> getParishResponse = Transform(parishList);
+            Parish parishList = this.getParishUsecases.GetParish(parishId);
+            GetParishResponse getParishResponse = Transform(parishList);
             return getParishResponse;
         }
 
-        private List<GetParishResponse> Transform(List<Parish> parishList)
+        private GetParishResponse Transform(Parish parish)
         {
-            List<GetParishResponse> getParishResponse = new List<GetParishResponse>();
-            foreach(Parish parish in parishList)
+            GetParishResponse getParishResponse = new GetParishResponse()
             {
-                GetParishResponse getParish = new GetParishResponse()
-                {
-                    Address = parish.Address,
-                    Id = parish.Id,
-                    Name = parish.Name,
-                    ParishPriest = Transform(parish.GetPriest()),
-                    AssistantParishPriests = Transform(parish.GetAssistantPriests()),
-                    CouncilMembers = Transform(parish.GetCouncilMembers()),
-                    Parishners = Transform(parish.GetMembers())
-                };
-                getParishResponse.Add(getParish);
-            }
+                Address = parish.Address,
+                Id = parish.Id,
+                Name = parish.Name,
+                ParishPriest = Transform(parish.GetPriest()),
+                AssistantParishPriests = Transform(parish.GetAssistantPriests()),
+                CouncilMembers = Transform(parish.GetCouncilMembers()),
+                Parishners = Transform(parish.GetMembers())
+            };
             return getParishResponse;
         }
 

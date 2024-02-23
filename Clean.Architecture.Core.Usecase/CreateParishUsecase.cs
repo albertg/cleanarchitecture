@@ -16,7 +16,9 @@ namespace Clean.Architecture.Core.Usecase
 
         public Parish CreateParish(Parish parish, Parishner parishPriest)
         {
+            //TODO: Check if parish with same name and address already exists
             parishPriest.ParishnerType = ParishnerType.Priest;
+            parishPriest.PromoteAsCouncilMember();
             parish.RegisterParishner(parishPriest);
             this.parishPersistance.AddParish(parish);
             return parish;

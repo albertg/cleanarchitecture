@@ -18,9 +18,9 @@ namespace Clean.Architecture.Core.Usecase
             this.parishPersistance = parishPersistance;
         }
 
-        public List<Parish> GetAllParishes()
+        public Parish GetParish(Guid parishId)
         {
-            return this.parishPersistance.GetParishList();
+            return this.parishPersistance.GetParishById(parishId);
         }
     }
 }

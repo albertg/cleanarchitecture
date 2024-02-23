@@ -3,6 +3,7 @@ using Clean.Architecture.Core.Usecase.Interface;
 using Clean.Architecture.Core.Usecase.Interface.External;
 using Clean.Architecture.Infrastructure.Database.InMemory;
 using Clean.Architecture.Infrastructure.Database.InMemory.Context;
+using System.Text.Json.Serialization;
 
 namespace Clean.Architecture.API
 {
@@ -14,7 +15,8 @@ namespace Clean.Architecture.API
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+                .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));//For swagger to display the enum values as string.
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
