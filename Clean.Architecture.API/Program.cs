@@ -1,0 +1,49 @@
+using Clean.Architecture.Core.Usecase;
+using Clean.Architecture.Core.Usecase.Interface;
+using Clean.Architecture.Core.Usecase.Interface.External;
+using Clean.Architecture.Infrastructure.Database.InMemory;
+using Clean.Architecture.Infrastructure.Database.InMemory.Context;
+
+namespace Clean.Architecture.API
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            var builder = WebApplication.CreateBuilder(args);
+
+            // Add services to the container.
+
+            builder.Services.AddControllers();
+            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
+
+            builder.Services.AddSingleton(typeof(ParishDBContext));
+            builder.Services.AddSingleton<ParishPersistence>();
+            builder.Services.AddScoped<IParishPersistence>(x => x.GetRequiredService<ParishPersistence>());
+            builder.Services.AddScoped<IParishnerPersistence>(x => x.GetRequiredService<ParishPersistence>());
+            builder.Services.AddScoped<ICreateParishUsecase, CreateParishUsecase>();
+            builder.Services.AddScoped<ICreateParishnerUsecases, CreateParishnerUsecases>();
+            builder.Services.AddScoped<IGetParishUsecases, GetParishUsecases>();
+            
+            var app = builder.Build();
+
+            // Configure the HTTP request pipeline.
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
+
+            app.UseHttpsRedirection();
+
+            app.UseAuthorization();
+
+
+            app.MapControllers();
+
+            app.Run();
+        }
+    }
+}
