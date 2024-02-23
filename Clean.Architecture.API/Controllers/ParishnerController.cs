@@ -13,10 +13,12 @@ namespace Clean.Architecture.API.Controllers
     public class ParishnerController : ControllerBase
     {
         private readonly ICreateParishnerUsecases createParishnerUsecases;
+        private readonly IGetParishnerUsecases getParishnerUsecases;
 
-        public ParishnerController(ICreateParishnerUsecases createParishnerUsecases)
+        public ParishnerController(ICreateParishnerUsecases createParishnerUsecases, IGetParishnerUsecases getParishnerUsecases)
         {
             this.createParishnerUsecases = createParishnerUsecases;
+            this.getParishnerUsecases = getParishnerUsecases;
         }
 
         [HttpPost("add")]
@@ -25,6 +27,27 @@ namespace Clean.Architecture.API.Controllers
             Parishner parishner = Transform(newParishnerRequest);
             parishner = this.createParishnerUsecases.AddParishner(parishner, newParishnerRequest.ParishId);
             return parishner.Id;
+        }
+
+        [HttpGet("get")]
+        public GetParishnerDetailsResponse GetParishner(Guid parishnerId, Guid parishId)
+        {
+            Parishner parishner = this.getParishnerUsecases.GetParishner(parishnerId, parishId);
+            return Transform(parishner);
+        }
+
+        private GetParishnerDetailsResponse Transform(Parishner parishner)
+        {
+            GetParishnerDetailsResponse getParishnerResponse = new GetParishnerDetailsResponse()
+            {
+                Address = parishner.Address,
+                DateOfBirth = parishner.DateOfBirth,
+                Id = parishner.Id,
+                Name = parishner.Name,
+                Phone = parishner.PhoneNumber,
+                IsCouncilMember = parishner.IsCouncilMember,
+            };
+            return getParishnerResponse;
         }
 
         private Parishner Transform(NewParishnerRequest newParishnerRequest)

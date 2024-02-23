@@ -19,7 +19,7 @@ namespace Clean.Architecture.Infrastructure.Database.InMemory
         }
         
         internal GenericRepository<DbParish> ParishRepository { get { return new GenericRepository<DbParish>(context); } }
-        internal GenericRepository<DbParishner> ParishnerRepository { get { return new GenericRepository<DbParishner>(context); } }
+        internal ParishnerRepository ParishnerRepository { get { return new ParishnerRepository(context); } }
 
         public void Save()
         {

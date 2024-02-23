@@ -53,22 +53,19 @@ namespace Clean.Architecture.API.Controllers
             return getParishResponse;
         }
 
-        private GetParishnerResponse Transform(Parishner parishner)
+        private GetParishnerInfoResponse Transform(Parishner parishner)
         {
-            GetParishnerResponse getParishnerResponse = new GetParishnerResponse()
+            GetParishnerInfoResponse getParishnerResponse = new GetParishnerInfoResponse()
             {
-                Address = parishner.Address,
                 Id = parishner.Id,
-                DateOfBirth = parishner.DateOfBirth,
                 Name = parishner.Name,
-                Phone = parishner.PhoneNumber
             };
             return getParishnerResponse;
         }
 
-        private List<GetParishnerResponse> Transform(List<Parishner> parishnerList)
+        private List<GetParishnerInfoResponse> Transform(List<Parishner> parishnerList)
         {
-            List<GetParishnerResponse> getParishnerResponse = new List<GetParishnerResponse>();
+            List<GetParishnerInfoResponse> getParishnerResponse = new List<GetParishnerInfoResponse>();
             foreach(Parishner parishner in parishnerList)
             {
                 getParishnerResponse.Add(Transform(parishner));

@@ -27,6 +27,7 @@ namespace Clean.Architecture.API
             builder.Services.AddScoped<IParishnerPersistence>(x => x.GetRequiredService<ParishPersistence>());
             builder.Services.AddScoped<ICreateParishUsecase, CreateParishUsecase>();
             builder.Services.AddScoped<ICreateParishnerUsecases, CreateParishnerUsecases>();
+            builder.Services.AddScoped<IGetParishnerUsecases, GetParishnerUsecases>();
             builder.Services.AddScoped<IGetParishUsecases, GetParishUsecases>();
             
             var app = builder.Build();
