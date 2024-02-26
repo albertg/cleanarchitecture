@@ -21,8 +21,8 @@ namespace Clean.Architecture.API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddSingleton(typeof(ParishDBContext));
-            builder.Services.AddSingleton<ParishPersistence>();
+            builder.Services.AddScoped(typeof(ParishDBContext));
+            builder.Services.AddScoped<ParishPersistence>();
             builder.Services.AddScoped<IParishPersistence>(x => x.GetRequiredService<ParishPersistence>());
             builder.Services.AddScoped<IParishnerPersistence>(x => x.GetRequiredService<ParishPersistence>());
             builder.Services.AddScoped<ICreateParishUsecase, CreateParishUsecase>();

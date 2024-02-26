@@ -47,8 +47,7 @@ namespace Clean.Architecture.API.Controllers
                 Name = parish.Name,
                 ParishPriest = Transform(parish.GetPriest()),
                 AssistantParishPriests = Transform(parish.GetAssistantPriests()),
-                CouncilMembers = Transform(parish.GetCouncilMembers()),
-                Parishners = Transform(parish.GetMembers())
+                CouncilMembers = Transform(parish.GetCouncilMembers())
             };
             return getParishResponse;
         }

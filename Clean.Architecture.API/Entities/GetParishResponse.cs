@@ -8,6 +8,5 @@
         public GetParishnerInfoResponse ParishPriest { get; set; }
         public List<GetParishnerInfoResponse> AssistantParishPriests { get; set; }
         public List<GetParishnerInfoResponse> CouncilMembers { get; set; }
-        public List<GetParishnerInfoResponse> Parishners { get; set; }
     }
 }
