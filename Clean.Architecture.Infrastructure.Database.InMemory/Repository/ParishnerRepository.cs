@@ -23,5 +23,11 @@ namespace Clean.Architecture.Infrastructure.Database.InMemory.Repository
             dbSet.Update(parishner);
             context.SaveChanges();
         }
+
+        public List<DbParishner> GetMany(Guid id, int page, int pageSize)
+        {
+            int position = page * pageSize;
+            return dbSet.Where(x => x.Parish.Id == id).Skip(position).Take(pageSize).ToList();
+        }
     }
 }

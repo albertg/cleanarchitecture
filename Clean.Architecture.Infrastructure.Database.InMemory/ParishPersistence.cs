@@ -17,19 +17,6 @@ namespace Clean.Architecture.Infrastructure.Database.InMemory
             this.unitOfWork = new UnitOfWork(context);
         }
 
-        public List<Parish> GetParishList()
-        {
-            List<DbParish> dbParishList = this.unitOfWork.ParishRepository.GetAll();
-            List<Parish> parishList = new List<Parish>();
-            foreach(DbParish dbParish in dbParishList)
-            {
-                Parish parish = new Parish(dbParish.Id, dbParish.Name, dbParish.Address);
-                RegisterParishners(parish, dbParish.Parishners);
-                parishList.Add(parish);
-            }
-            return parishList;
-        }
-
         public Parishner GetParishner(Guid parishnerId, Guid parishId)
         {
             DbParishner dbParishner = this.unitOfWork.ParishnerRepository.Get(parishnerId, parishId);            
@@ -67,6 +54,22 @@ namespace Clean.Architecture.Infrastructure.Database.InMemory
             Parish parish = new Parish(dbParish.Id, dbParish.Name, dbParish.Address);
             RegisterParishners(parish, dbParish.Parishners);
             return parish;
+        }
+
+        public List<Parishner> GetParishners(Guid parishId, int page, int pageSize)
+        {
+            List<DbParishner> dbParishners = this.unitOfWork.ParishnerRepository.GetMany(parishId, page, pageSize);
+            return Transform(dbParishners);
+        }
+
+        private List<Parishner> Transform(List<DbParishner> dbParishners)
+        {
+            List<Parishner> parishners = new List<Parishner>();
+            foreach(DbParishner dbParishner in dbParishners)
+            {
+                parishners.Add(Transform(dbParishner));
+            }
+            return parishners;
         }
 
         private Parishner Transform(DbParishner dbParishner)

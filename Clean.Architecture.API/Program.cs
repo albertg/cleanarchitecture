@@ -1,3 +1,5 @@
+using Clean.Architecture.API.Usecases;
+using Clean.Architecture.API.Usecases.Interfaces;
 using Clean.Architecture.Core.Usecase;
 using Clean.Architecture.Core.Usecase.Interface;
 using Clean.Architecture.Core.Usecase.Interface.External;
@@ -30,6 +32,7 @@ namespace Clean.Architecture.API
             builder.Services.AddScoped<IGetParishnerUsecases, GetParishnerUsecases>();
             builder.Services.AddScoped<IGetParishUsecases, GetParishUsecases>();
             builder.Services.AddScoped<IModifyParishnerUsecases, ModifyParishnerUsecases>();
+            builder.Services.AddScoped<IGetPagedParishners, GetPagedParishners>();
             
             var app = builder.Build();
 

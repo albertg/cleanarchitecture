@@ -1,4 +1,5 @@
 ﻿using Clean.Architecture.API.Entities;
+using Clean.Architecture.API.Usecases.Interfaces;
 using Clean.Architecture.Core.Model;
 using Clean.Architecture.Core.Model.Enums;
 using Clean.Architecture.Core.Usecase.Interface;
@@ -15,13 +16,15 @@ namespace Clean.Architecture.API.Controllers
         private readonly ICreateParishnerUsecases createParishnerUsecases;
         private readonly IGetParishnerUsecases getParishnerUsecases;
         private readonly IModifyParishnerUsecases modifyParishnerUsecases;
+        private readonly IGetPagedParishners getPagedParishners;
 
         public ParishnerController(ICreateParishnerUsecases createParishnerUsecases, IGetParishnerUsecases getParishnerUsecases,
-            IModifyParishnerUsecases modifyParishnerUsecases)
+            IModifyParishnerUsecases modifyParishnerUsecases, IGetPagedParishners getPagedParishners)
         {
             this.createParishnerUsecases = createParishnerUsecases;
             this.getParishnerUsecases = getParishnerUsecases;
             this.modifyParishnerUsecases = modifyParishnerUsecases;
+            this.getPagedParishners = getPagedParishners;
         }
 
         [HttpPost("add")]
@@ -39,10 +42,27 @@ namespace Clean.Architecture.API.Controllers
             return Transform(parishner);
         }
 
+        [HttpGet("getmany")]
+        public List<GetParishnerDetailsResponse> GetParishners(Guid parishId, int currentPage, int pageSize)
+        {
+            List<Parishner> parishners = this.getPagedParishners.GetParishners(parishId, currentPage, pageSize);
+            return Transform(parishners);
+        }
+
         [HttpPut("promote")]
         public void PromoteParishner(Guid parishnerId, Guid parishId)
         {
             this.modifyParishnerUsecases.PromoteParishnerAsCouncilMember(parishnerId, parishId);
+        }
+
+        private List<GetParishnerDetailsResponse> Transform(List<Parishner> parishners)
+        {
+            List<GetParishnerDetailsResponse> getParishnerDetailsResponses = new List<GetParishnerDetailsResponse>();
+            foreach(Parishner parishner in parishners)
+            {
+                getParishnerDetailsResponses.Add(Transform(parishner));
+            }
+            return getParishnerDetailsResponses;
         }
 
         private GetParishnerDetailsResponse Transform(Parishner parishner)
@@ -55,6 +75,7 @@ namespace Clean.Architecture.API.Controllers
                 Name = parishner.Name,
                 Phone = parishner.PhoneNumber,
                 IsCouncilMember = parishner.IsCouncilMember,
+                MemberType = Transform(parishner.ParishnerType)
             };
             return getParishnerResponse;
         }
@@ -82,6 +103,19 @@ namespace Clean.Architecture.API.Controllers
                     parishnerType = ParishnerType.Priest; break;
             }
             return parishnerType;
+        }
+
+        private MemberType Transform(ParishnerType parishnerType)
+        {
+            MemberType memberType = MemberType.Member;
+            switch (parishnerType)
+            {
+                case ParishnerType.AssistantPriest:
+                    memberType = MemberType.Assistant; break;
+                case ParishnerType.Priest:
+                    memberType = MemberType.ParishPriest; break;
+            }
+            return memberType;
         }
     }
 }

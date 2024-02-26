@@ -10,7 +10,6 @@ namespace Clean.Architecture.Core.Usecase.Interface.External
     public interface IParishPersistence
     {
         void AddParish(Parish parish);
-        List<Parish> GetParishList();
         Parish GetParishById(Guid parishId);
     }
 }
