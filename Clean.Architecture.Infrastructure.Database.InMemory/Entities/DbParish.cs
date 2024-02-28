@@ -9,8 +9,8 @@ namespace Clean.Architecture.Infrastructure.Database.InMemory.Entities
     internal class DbParish
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Address { get; set; }
+        public string Name { get; set; } = "";
+        public string Address { get; set; } = "";
         public List<DbParishner> Parishners { get; set; }
     }
 }

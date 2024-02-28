@@ -12,12 +12,10 @@ namespace Clean.Architecture.Core.Usecase
     public class ModifyParishnerUsecases : IModifyParishnerUsecases
     {
         private readonly IParishnerPersistence parishnerPersistence;
-        private readonly IParishPersistence parishPersistance;
 
-        public ModifyParishnerUsecases(IParishnerPersistence parishnerPersistence, IParishPersistence parishPersistance)
+        public ModifyParishnerUsecases(IParishnerPersistence parishnerPersistence)
         {
             this.parishnerPersistence = parishnerPersistence;
-            this.parishPersistance = parishPersistance;
         }
 
         public void PromoteParishnerAsCouncilMember(Guid parishnerId, Guid parishId)

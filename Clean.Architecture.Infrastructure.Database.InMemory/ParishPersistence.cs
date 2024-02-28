@@ -10,7 +10,7 @@ namespace Clean.Architecture.Infrastructure.Database.InMemory
 {
     public class ParishPersistence : IParishPersistence, IParishnerPersistence
     {
-        private UnitOfWork unitOfWork;
+        private readonly UnitOfWork unitOfWork;
 
         public ParishPersistence(ParishDBContext context)
         {
@@ -51,7 +51,7 @@ namespace Clean.Architecture.Infrastructure.Database.InMemory
         public Parish GetParishById(Guid parishId)
         {
             DbParish dbParish = this.unitOfWork.ParishRepository.Get(parishId);
-            Parish parish = new Parish(dbParish.Id, dbParish.Name, dbParish.Address);
+            var parish = new Parish(dbParish.Id, dbParish.Name, dbParish.Address);
             RegisterParishners(parish, dbParish.Parishners);
             return parish;
         }
@@ -62,9 +62,9 @@ namespace Clean.Architecture.Infrastructure.Database.InMemory
             return Transform(dbParishners);
         }
 
-        private List<Parishner> Transform(List<DbParishner> dbParishners)
+        private static List<Parishner> Transform(List<DbParishner> dbParishners)
         {
-            List<Parishner> parishners = new List<Parishner>();
+            List<Parishner> parishners = new();
             foreach(DbParishner dbParishner in dbParishners)
             {
                 parishners.Add(Transform(dbParishner));
@@ -72,9 +72,9 @@ namespace Clean.Architecture.Infrastructure.Database.InMemory
             return parishners;
         }
 
-        private Parishner Transform(DbParishner dbParishner)
+        private static Parishner Transform(DbParishner dbParishner)
         {
-            Parishner parishner = null;
+            Parishner? parishner = null;
             if (dbParishner != default)
             {
                 parishner = new Parishner(dbParishner.Id, dbParishner.Name)
@@ -92,11 +92,11 @@ namespace Clean.Architecture.Infrastructure.Database.InMemory
             return parishner;
         }
 
-        private void RegisterParishners(Parish parish, List<DbParishner> parishners)
+        private static void RegisterParishners(Parish parish, List<DbParishner> parishners)
         {
             foreach (DbParishner dbParishner in parishners)
             {
-                Parishner parishner = new Parishner(dbParishner.Id, dbParishner.Name)
+                var parishner = new Parishner(dbParishner.Id, dbParishner.Name)
                 {
                     ParishnerType = (ParishnerType)dbParishner.ParishnerType,
                     Address = dbParishner.Address,
@@ -113,25 +113,29 @@ namespace Clean.Architecture.Infrastructure.Database.InMemory
 
         private DbParish CreateParish(Parish parish)
         {
-            DbParish dbParish = new DbParish();
-            dbParish.Name = parish.Name;
-            dbParish.Address = parish.Address;
-            dbParish.Id = parish.Id;
+            var dbParish = new DbParish()
+            {
+                Name = parish.Name,
+                Address = parish.Address,
+                Id = parish.Id
+            };
             unitOfWork.ParishRepository.Add(dbParish);
             return dbParish;
         }
 
         private DbParishner CreateDbParishner(Parishner parishner, DbParish parish)
         {
-            DbParishner dbParishner = new DbParishner();
-            dbParishner.Parish = parish;
-            dbParishner.Id = parishner.Id;
-            dbParishner.Name = parishner.Name;
-            dbParishner.DateOfBirth = parishner.DateOfBirth;
-            dbParishner.ParishnerType = (int)parishner.ParishnerType;
-            dbParishner.IsMemberOfCouncil = parishner.IsCouncilMember;
-            dbParishner.Address = parishner.Address;
-            dbParishner.Phone = parishner.PhoneNumber;
+            var dbParishner = new DbParishner()
+            {
+                Parish = parish,
+                Id = parishner.Id,
+                Name = parishner.Name,
+                DateOfBirth = parishner.DateOfBirth,
+                ParishnerType = (int)parishner.ParishnerType,
+                IsMemberOfCouncil = parishner.IsCouncilMember,
+                Address = parishner.Address,
+                Phone = parishner.PhoneNumber
+            };
             unitOfWork.ParishnerRepository.Add(dbParishner);
             return dbParishner;
         }

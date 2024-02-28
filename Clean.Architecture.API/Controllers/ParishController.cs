@@ -21,11 +21,13 @@ namespace Clean.Architecture.API.Controllers
         [HttpPost("add")]
         public Guid Post([FromBody] NewParishRequest newParish)
         {
-            Parish parish = new Parish(newParish.ParishName, newParish.ParishAddress);
-            Parishner parishPriest = new Parishner(newParish.PriestName);
-            parishPriest.Address = newParish.PriestAddress;
-            parishPriest.PhoneNumber = newParish.PriestPhone;
-            parishPriest.DateOfBirth = newParish.PriestDateOfBirth;
+            var parish = new Parish(newParish.ParishName, newParish.ParishAddress);
+            var parishPriest = new Parishner(newParish.PriestName)
+            {
+                Address = newParish.PriestAddress,
+                PhoneNumber = newParish.PriestPhone,
+                DateOfBirth = newParish.PriestDateOfBirth
+            };
             parish = this.createParishUsecase.CreateParish(parish, parishPriest);
             return parish.Id;
         }
@@ -38,9 +40,9 @@ namespace Clean.Architecture.API.Controllers
             return getParishResponse;
         }
 
-        private GetParishResponse Transform(Parish parish)
+        private static GetParishResponse Transform(Parish parish)
         {
-            GetParishResponse getParishResponse = new GetParishResponse()
+            var getParishResponse = new GetParishResponse()
             {
                 Address = parish.Address,
                 Id = parish.Id,
@@ -52,9 +54,9 @@ namespace Clean.Architecture.API.Controllers
             return getParishResponse;
         }
 
-        private GetParishnerInfoResponse Transform(Parishner parishner)
+        private static GetParishnerInfoResponse Transform(Parishner parishner)
         {
-            GetParishnerInfoResponse getParishnerResponse = new GetParishnerInfoResponse()
+            var getParishnerResponse = new GetParishnerInfoResponse()
             {
                 Id = parishner.Id,
                 Name = parishner.Name,
@@ -62,9 +64,9 @@ namespace Clean.Architecture.API.Controllers
             return getParishnerResponse;
         }
 
-        private List<GetParishnerInfoResponse> Transform(List<Parishner> parishnerList)
+        private static List<GetParishnerInfoResponse> Transform(List<Parishner> parishnerList)
         {
-            List<GetParishnerInfoResponse> getParishnerResponse = new List<GetParishnerInfoResponse>();
+            var getParishnerResponse = new List<GetParishnerInfoResponse>();
             foreach(Parishner parishner in parishnerList)
             {
                 getParishnerResponse.Add(Transform(parishner));

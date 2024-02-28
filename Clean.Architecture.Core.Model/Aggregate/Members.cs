@@ -5,7 +5,7 @@ namespace Clean.Architecture.Core.Model.Aggregate
 {
     public class Members
     {
-        private List<Parishner> parishnerList;
+        private readonly List<Parishner> parishnerList;
 
         public Members()
         {

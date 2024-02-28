@@ -21,11 +21,9 @@ namespace Clean.Architecture.Core.Usecase
 
         public Parishner GetParishner(Guid parishnerId, Guid parishId)
         {
-            Parishner parishner = this.parishnerPersistence.GetParishner(parishnerId, parishId);
-            if(parishner == null)
-            {
+            Parishner parishner = this.parishnerPersistence.GetParishner(parishnerId, parishId) ??
                 throw new NotFoundException($"Parishner with Id {parishnerId} was not found");
-            }
+
             return parishner;
         }
     }

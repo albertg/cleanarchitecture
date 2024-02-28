@@ -55,9 +55,9 @@ namespace Clean.Architecture.API.Controllers
             this.modifyParishnerUsecases.PromoteParishnerAsCouncilMember(parishnerId, parishId);
         }
 
-        private List<GetParishnerDetailsResponse> Transform(List<Parishner> parishners)
+        private static List<GetParishnerDetailsResponse> Transform(List<Parishner> parishners)
         {
-            List<GetParishnerDetailsResponse> getParishnerDetailsResponses = new List<GetParishnerDetailsResponse>();
+            var getParishnerDetailsResponses = new List<GetParishnerDetailsResponse>();
             foreach(Parishner parishner in parishners)
             {
                 getParishnerDetailsResponses.Add(Transform(parishner));
@@ -65,9 +65,9 @@ namespace Clean.Architecture.API.Controllers
             return getParishnerDetailsResponses;
         }
 
-        private GetParishnerDetailsResponse Transform(Parishner parishner)
+        private static GetParishnerDetailsResponse Transform(Parishner parishner)
         {
-            GetParishnerDetailsResponse getParishnerResponse = new GetParishnerDetailsResponse()
+            var getParishnerResponse = new GetParishnerDetailsResponse()
             {
                 Address = parishner.Address,
                 DateOfBirth = parishner.DateOfBirth,
@@ -80,9 +80,9 @@ namespace Clean.Architecture.API.Controllers
             return getParishnerResponse;
         }
 
-        private Parishner Transform(NewParishnerRequest newParishnerRequest)
+        private static Parishner Transform(NewParishnerRequest newParishnerRequest)
         {
-            Parishner parishner = new Parishner(newParishnerRequest.Name)
+            var parishner = new Parishner(newParishnerRequest.Name)
             {
                 Address = newParishnerRequest.Address,
                 DateOfBirth = newParishnerRequest.DateOfBirth,
@@ -92,7 +92,7 @@ namespace Clean.Architecture.API.Controllers
             return parishner;
         }
 
-        private ParishnerType Transform(MemberType memberType)
+        private static ParishnerType Transform(MemberType memberType)
         {
             ParishnerType parishnerType = ParishnerType.Parishner;
             switch (memberType)
@@ -105,7 +105,7 @@ namespace Clean.Architecture.API.Controllers
             return parishnerType;
         }
 
-        private MemberType Transform(ParishnerType parishnerType)
+        private static MemberType Transform(ParishnerType parishnerType)
         {
             MemberType memberType = MemberType.Member;
             switch (parishnerType)
