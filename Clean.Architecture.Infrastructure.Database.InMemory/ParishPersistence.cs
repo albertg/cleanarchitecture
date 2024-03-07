@@ -50,9 +50,14 @@ namespace Clean.Architecture.Infrastructure.Database.InMemory
 
         public Parish GetParishById(Guid parishId)
         {
-            DbParish dbParish = this.unitOfWork.ParishRepository.Get(parishId);
-            var parish = new Parish(dbParish.Id, dbParish.Name, dbParish.Address);
-            RegisterParishners(parish, dbParish.Parishners);
+            Parish? parish = null;
+            DbParish dbParish = this.unitOfWork.ParishRepository.Get(parishId);            
+            if(dbParish != null)
+            {
+                parish = new Parish(dbParish.Id, dbParish.Name, dbParish.Address);
+                RegisterParishners(parish, dbParish.Parishners);
+            }
+            
             return parish;
         }
 

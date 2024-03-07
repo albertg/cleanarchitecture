@@ -19,7 +19,8 @@ namespace Clean.Architecture.API.Controllers
         }
 
         [HttpPost("add")]
-        public Guid Post([FromBody] NewParishRequest newParish)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public ActionResult<Guid> Post([FromBody] NewParishRequest newParish)
         {
             var parish = new Parish(newParish.ParishName, newParish.ParishAddress);
             var parishPriest = new Parishner(newParish.PriestName)
@@ -29,28 +30,41 @@ namespace Clean.Architecture.API.Controllers
                 DateOfBirth = newParish.PriestDateOfBirth
             };
             parish = this.createParishUsecase.CreateParish(parish, parishPriest);
-            return parish.Id;
+            return Ok(parish.Id);
         }
 
         [HttpGet(Name = "get")]
-        public GetParishResponse Get(Guid parishId)
+        [ProducesResponseType(typeof(GetParishResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<GetParishResponse> Get(Guid parishId)
         {
             Parish parishList = this.getParishUsecases.GetParish(parishId);
             GetParishResponse getParishResponse = Transform(parishList);
-            return getParishResponse;
+            if(getParishResponse != null)
+            {
+                return Ok(getParishResponse);
+            }
+            else
+            {
+                return NotFound(parishId);
+            }
         }
 
         private static GetParishResponse Transform(Parish parish)
         {
-            var getParishResponse = new GetParishResponse()
+            GetParishResponse? getParishResponse = null;
+            if (parish != null)
             {
-                Address = parish.Address,
-                Id = parish.Id,
-                Name = parish.Name,
-                ParishPriest = Transform(parish.GetPriest()),
-                AssistantParishPriests = Transform(parish.GetAssistantPriests()),
-                CouncilMembers = Transform(parish.GetCouncilMembers())
-            };
+                getParishResponse = new GetParishResponse()
+                {
+                    Address = parish.Address,
+                    Id = parish.Id,
+                    Name = parish.Name,
+                    ParishPriest = Transform(parish.GetPriest()),
+                    AssistantParishPriests = Transform(parish.GetAssistantPriests()),
+                    CouncilMembers = Transform(parish.GetCouncilMembers())
+                };
+            }
             return getParishResponse;
         }
 

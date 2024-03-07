@@ -1,4 +1,5 @@
 ﻿using Clean.Architecture.API.Entities;
+using Clean.Architecture.API.Transforms.Interface;
 using Clean.Architecture.API.Usecases.Interfaces;
 using Clean.Architecture.Core.Model;
 using Clean.Architecture.Core.Model.Enums;
@@ -17,105 +18,56 @@ namespace Clean.Architecture.API.Controllers
         private readonly IGetParishnerUsecases getParishnerUsecases;
         private readonly IModifyParishnerUsecases modifyParishnerUsecases;
         private readonly IGetPagedParishners getPagedParishners;
+        private readonly IParishnerTransform parishnerTransform;
 
         public ParishnerController(ICreateParishnerUsecases createParishnerUsecases, IGetParishnerUsecases getParishnerUsecases,
-            IModifyParishnerUsecases modifyParishnerUsecases, IGetPagedParishners getPagedParishners)
+            IModifyParishnerUsecases modifyParishnerUsecases, IGetPagedParishners getPagedParishners, IParishnerTransform parishnerTransform)
         {
             this.createParishnerUsecases = createParishnerUsecases;
             this.getParishnerUsecases = getParishnerUsecases;
             this.modifyParishnerUsecases = modifyParishnerUsecases;
             this.getPagedParishners = getPagedParishners;
+            this.parishnerTransform = parishnerTransform;
         }
 
         [HttpPost("add")]
-        public Guid AddParishner([FromBody] NewParishnerRequest newParishnerRequest)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public ActionResult<Guid> AddParishner([FromBody] NewParishnerRequest newParishnerRequest)
         {
-            Parishner parishner = Transform(newParishnerRequest);
+            Parishner parishner = this.parishnerTransform.Transform(newParishnerRequest);
             parishner = this.createParishnerUsecases.AddParishner(parishner, newParishnerRequest.ParishId);
             return parishner.Id;
         }
 
         [HttpGet("get")]
-        public GetParishnerDetailsResponse GetParishner(Guid parishnerId, Guid parishId)
+        [ProducesResponseType(typeof(GetParishnerDetailsResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<GetParishnerDetailsResponse> GetParishner(Guid parishnerId, Guid parishId)
         {
             Parishner parishner = this.getParishnerUsecases.GetParishner(parishnerId, parishId);
-            return Transform(parishner);
+            GetParishnerDetailsResponse getParishnerDetailsResponse = this.parishnerTransform.Transform<GetParishnerDetailsResponse>(parishner);//Transform(parishner);
+            if(getParishnerDetailsResponse != null)
+            {
+                return Ok(getParishnerDetailsResponse);
+            }
+            else
+            {
+                return NotFound();
+            }
+            
         }
 
         [HttpGet("getmany")]
         public List<GetParishnerDetailsResponse> GetParishners(Guid parishId, int currentPage, int pageSize)
         {
             List<Parishner> parishners = this.getPagedParishners.GetParishners(parishId, currentPage, pageSize);
-            return Transform(parishners);
+            return this.parishnerTransform.Transform<GetParishnerDetailsResponse>(parishners);
         }
 
         [HttpPut("promote")]
         public void PromoteParishner(Guid parishnerId, Guid parishId)
         {
             this.modifyParishnerUsecases.PromoteParishnerAsCouncilMember(parishnerId, parishId);
-        }
-
-        private static List<GetParishnerDetailsResponse> Transform(List<Parishner> parishners)
-        {
-            var getParishnerDetailsResponses = new List<GetParishnerDetailsResponse>();
-            foreach(Parishner parishner in parishners)
-            {
-                getParishnerDetailsResponses.Add(Transform(parishner));
-            }
-            return getParishnerDetailsResponses;
-        }
-
-        private static GetParishnerDetailsResponse Transform(Parishner parishner)
-        {
-            var getParishnerResponse = new GetParishnerDetailsResponse()
-            {
-                Address = parishner.Address,
-                DateOfBirth = parishner.DateOfBirth,
-                Id = parishner.Id,
-                Name = parishner.Name,
-                Phone = parishner.PhoneNumber,
-                IsCouncilMember = parishner.IsCouncilMember,
-                MemberType = Transform(parishner.ParishnerType)
-            };
-            return getParishnerResponse;
-        }
-
-        private static Parishner Transform(NewParishnerRequest newParishnerRequest)
-        {
-            var parishner = new Parishner(newParishnerRequest.Name)
-            {
-                Address = newParishnerRequest.Address,
-                DateOfBirth = newParishnerRequest.DateOfBirth,
-                PhoneNumber = newParishnerRequest.Phone,
-                ParishnerType = Transform(newParishnerRequest.TypeOfMember)
-            };
-            return parishner;
-        }
-
-        private static ParishnerType Transform(MemberType memberType)
-        {
-            ParishnerType parishnerType = ParishnerType.Parishner;
-            switch (memberType)
-            {
-                case MemberType.Assistant:
-                    parishnerType = ParishnerType.AssistantPriest; break;
-                case MemberType.ParishPriest:
-                    parishnerType = ParishnerType.Priest; break;
-            }
-            return parishnerType;
-        }
-
-        private static MemberType Transform(ParishnerType parishnerType)
-        {
-            MemberType memberType = MemberType.Member;
-            switch (parishnerType)
-            {
-                case ParishnerType.AssistantPriest:
-                    memberType = MemberType.Assistant; break;
-                case ParishnerType.Priest:
-                    memberType = MemberType.ParishPriest; break;
-            }
-            return memberType;
-        }
+        }        
     }
 }
