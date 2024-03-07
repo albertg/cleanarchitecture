@@ -36,6 +36,7 @@ namespace Clean.Architecture.API
             builder.Services.AddScoped<IModifyParishnerUsecases, ModifyParishnerUsecases>();
             builder.Services.AddScoped<IGetPagedParishners, GetPagedParishners>();
             builder.Services.AddScoped<IParishnerTransform, ParishnerTransforms>();
+            builder.Services.AddScoped<IParishTransform, ParishTransforms>();
             
             var app = builder.Build();
 

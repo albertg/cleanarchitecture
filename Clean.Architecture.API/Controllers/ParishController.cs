@@ -1,4 +1,5 @@
 ﻿using Clean.Architecture.API.Entities;
+using Clean.Architecture.API.Transforms.Interface;
 using Clean.Architecture.Core.Model;
 using Clean.Architecture.Core.Usecase.Interface;
 using Microsoft.AspNetCore.Mvc;
@@ -11,11 +12,14 @@ namespace Clean.Architecture.API.Controllers
     {
         private readonly ICreateParishUsecase createParishUsecase;
         private readonly IGetParishUsecases getParishUsecases;
+        private readonly IParishTransform parishTransform;
 
-        public ParishController(ICreateParishUsecase createParishUsecase, IGetParishUsecases getParishUsecases)
+        public ParishController(ICreateParishUsecase createParishUsecase, IGetParishUsecases getParishUsecases, 
+            IParishTransform parishTransform)
         {
             this.createParishUsecase = createParishUsecase;
             this.getParishUsecases = getParishUsecases;
+            this.parishTransform = parishTransform;
         }
 
         [HttpPost("add")]
@@ -39,7 +43,7 @@ namespace Clean.Architecture.API.Controllers
         public ActionResult<GetParishResponse> Get(Guid parishId)
         {
             Parish parishList = this.getParishUsecases.GetParish(parishId);
-            GetParishResponse getParishResponse = Transform(parishList);
+            GetParishResponse getParishResponse = this.parishTransform.Transform(parishList);
             if(getParishResponse != null)
             {
                 return Ok(getParishResponse);
@@ -48,44 +52,6 @@ namespace Clean.Architecture.API.Controllers
             {
                 return NotFound(parishId);
             }
-        }
-
-        private static GetParishResponse Transform(Parish parish)
-        {
-            GetParishResponse? getParishResponse = null;
-            if (parish != null)
-            {
-                getParishResponse = new GetParishResponse()
-                {
-                    Address = parish.Address,
-                    Id = parish.Id,
-                    Name = parish.Name,
-                    ParishPriest = Transform(parish.GetPriest()),
-                    AssistantParishPriests = Transform(parish.GetAssistantPriests()),
-                    CouncilMembers = Transform(parish.GetCouncilMembers())
-                };
-            }
-            return getParishResponse;
-        }
-
-        private static GetParishnerInfoResponse Transform(Parishner parishner)
-        {
-            var getParishnerResponse = new GetParishnerInfoResponse()
-            {
-                Id = parishner.Id,
-                Name = parishner.Name,
-            };
-            return getParishnerResponse;
-        }
-
-        private static List<GetParishnerInfoResponse> Transform(List<Parishner> parishnerList)
-        {
-            var getParishnerResponse = new List<GetParishnerInfoResponse>();
-            foreach(Parishner parishner in parishnerList)
-            {
-                getParishnerResponse.Add(Transform(parishner));
-            }
-            return getParishnerResponse;
         }
     }
 }
