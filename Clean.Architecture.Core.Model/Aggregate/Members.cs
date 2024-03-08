@@ -28,7 +28,7 @@ namespace Clean.Architecture.Core.Model.Aggregate
 
         public Parishner GetPriest()
         {
-            return this.parishnerList.Where(p => p.ParishnerType == ParishnerType.Priest).First();
+            return parishnerList.First(p => p.ParishnerType == ParishnerType.Priest);
         }
 
         public List<Parishner> GetAssistants()
@@ -43,7 +43,7 @@ namespace Clean.Architecture.Core.Model.Aggregate
 
         private bool PriestExists()
         {
-            return parishnerList.Where(p => p.ParishnerType == ParishnerType.Priest).Count() == 1;
+            return parishnerList.Count(p => p.ParishnerType == ParishnerType.Priest) == 1;
         }
     }
 }

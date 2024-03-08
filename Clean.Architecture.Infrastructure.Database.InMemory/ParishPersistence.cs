@@ -128,7 +128,7 @@ namespace Clean.Architecture.Infrastructure.Database.InMemory
             return dbParish;
         }
 
-        private DbParishner CreateDbParishner(Parishner parishner, DbParish parish)
+        private void CreateDbParishner(Parishner parishner, DbParish parish)
         {
             var dbParishner = new DbParishner()
             {
@@ -142,7 +142,6 @@ namespace Clean.Architecture.Infrastructure.Database.InMemory
                 Phone = parishner.PhoneNumber
             };
             unitOfWork.ParishnerRepository.Add(dbParishner);
-            return dbParishner;
         }
     }
 }
